@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- GLOBAL TIME PARAM FOR ROSBAG PLAY  -->
+	<param name="use_sim_time" value="true" />
+	
+	<!-- PLAY DATASET  -->
+	<node pkg="rosbag" type="play" name="rosbag_play" args="/home/hugo/catkin_ws/records/lidar_camera_final.bag --clock --pause -r 1 -l" output="screen"/>
+	<!-- -s 575-->
+
+
+    <!-- launch rviz with custom profile-->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d /home/hugo/catkin_ws/records/lidar_camera.rviz" output="screen"/>
+
+  <!-- Filter the robot structure on the back lslidar points with a "crop box" -->
+  <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+
+  <node pkg="nodelet" type="nodelet" name="crop_box" args="load pcl/CropBox pcl_manager" output="screen">
+        <remap from="~input" to="front_lslidar_point_cloud" />
+        <remap from="~output" to="front_lslidar_point_cloud_filtered" />
+        <rosparam>
+              min_x: 2.8
+              max_x: 8.0
+              min_y: -4.0
+              max_y: 4.0
+              min_z: -4.0
+              max_z: 4.0
+              keep_organized: true
+              negative: true
+        </rosparam>
+   </node>
+
+</launch>
