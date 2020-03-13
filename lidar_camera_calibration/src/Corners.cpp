@@ -124,11 +124,13 @@ bool getCorners(cv::Mat img, pcl::PointCloud<pcl::PointXYZ> scan, cv::Mat P, int
 	//cv::namedWindow("combined", cv::WINDOW_NORMAL); 
 	ROS_INFO("cheguei_corners_6");
 	std::string pkg_loc = ros::package::getPath("lidar_camera_calibration");
-	std::ofstream outfile(pkg_loc + "/conf/points.txt", std::ios_base::trunc);
-	outfile << QUADS*4 << "\n";
-
+	
+	//------------------- Escreve os pontos obtidos pelas janelas no ficheiro points.txt ------------------//
+	
+	std::ofstream outfile(pkg_loc + "/conf/points.txt", std::ios_base::trunc); // cria variável para escrever em points.txt
+	outfile << QUADS*4 << "\n"; // escreve 8 -> numero de pontos -> Quads = 2 = num_markers
 	ROS_INFO("cheguei_corners_7");
-	for(int q=0; q<QUADS; q++)
+	for(int q=0; q<QUADS; q++) // para os 4 cantos dos cartões
 	{
 		ROS_INFO("cheguei_corners_8");
 		std::cout << "---------Moving on to next marker--------\n";
@@ -149,10 +151,17 @@ bool getCorners(cv::Mat img, pcl::PointCloud<pcl::PointXYZ> scan, cv::Mat P, int
 				while(collected != LINE_SEGMENTS[q])
 				{
 					
-						cv::setMouseCallback("cloud", onMouse, &_point_);
+						/*cv::setMouseCallback("cloud", onMouse, &_point_);
 						
 						cv::imshow("cloud", image_edge_laser);
-						cv::waitKey(0);
+						cv::waitKey(0);*/
+
+				//------------------ Buscar pontos a um ficheiro ----------------//
+				std::ofstream infile(pkg_loc + "/conf/pontos.txt", std::ios_base::trunc);
+
+
+
+
 						++collected;
 						//std::cout << _point_.x << " " << _point_.y << "\n";
 						polygon.push_back(_point_);
